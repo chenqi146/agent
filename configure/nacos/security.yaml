@@ -1,0 +1,48 @@
+api:
+  info:
+    title: SSO单点登录系统 API
+    description: 单点登录系统接口文档
+    version: 1.0.0
+    contact:
+      name: 开发团队
+      email: dev@example.com
+    license:
+      name: Apache 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0
+
+# MyBatis：XML 映射放在 resources/mapper 下
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.pg.platform.securitymng.infrastructure.persistence
+
+# 本地/默认安全配置（可被 Nacos security.yml 覆盖）
+# 注意：exclude-paths 必须是 security 服务实际收到的路径。网关 StripPrefix=1 后，请求到 security 时已无 /api 前缀，故这里用 /v1/agent/sso/**
+security:
+  jwt:
+    secret: agent-platform-operations-system
+    expiration-ms: 1900000
+    header: Authorization
+    prefix: Bearer
+  sso:
+    login-path: /v1/agent/sso/login
+    logout-path: /v1/agent/sso/logout
+    validate-path: /v1/agent/sso/validate
+    captcha-path: /v1/agent/sso/captcha
+    # 放行路径：按 security 收到的 URI 配置（网关已去掉 /api）
+    exclude-paths: /v1/agent/sso/**,/actuator/**,/api-docs/**,/swagger-ui/**,/swagger-ui.html,/v3/api-docs/**
+
+# Log4j2 配置（与 resources/log4j2.xml 配合）
+logging:
+  config: classpath:log4j2.xml
+  level:
+    root: INFO
+    com.pg.platform.security: DEBUG
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.apache.ibatis: DEBUG
+  file:
+    name: logs/security.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"

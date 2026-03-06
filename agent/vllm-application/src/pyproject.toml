@@ -1,0 +1,178 @@
+[project]
+name = "qjzh-vllm-application"
+version = "1.0.0"
+description = "基于vLLM和FastAPI的大模型推理服务，提供OpenAI兼容API"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "penghf", email = "penghf@example.com" }
+]
+keywords = ["vllm", "llm", "fastapi", "inference", "openai-api"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: GPU :: NVIDIA CUDA",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# ==================== 核心依赖 ====================
+dependencies = [
+    # vLLM 推理框架
+    "vllm>=0.4.0",
+    # Web 框架
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    # 数据验证
+    "pydantic>=2.5.0",
+    # 配置解析
+    "PyYAML>=6.0.1",
+    # 系统监控
+    "psutil>=5.9.0",
+    "nvidia-ml-py>=12.535.0",
+    # 数据处理
+    "numpy>=1.24.0",
+    # HTTP 请求
+    "requests>=2.31.0",
+]
+
+# ==================== 可选依赖 ====================
+[project.optional-dependencies]
+# 存储客户端
+storage = [
+    "redis>=5.0.0",
+    "pymysql>=1.1.0",
+    "qdrant-client>=1.7.0",
+]
+
+# 图像处理
+vision = [
+    "opencv-python>=4.8.0",
+    "pillow>=10.0.0",
+]
+
+# Memory 组件
+memory = [
+    "mem0ai>=0.0.20",
+]
+
+# 全部可选依赖
+all = [
+    "redis>=5.0.0",
+    "pymysql>=1.1.0",
+    "qdrant-client>=1.7.0",
+    "opencv-python>=4.8.0",
+    "pillow>=10.0.0",
+    "mem0ai>=0.0.20",
+]
+
+# ==================== 开发依赖 ====================
+[tool.uv]
+dev-dependencies = [
+    # 测试
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "httpx>=0.25.0",
+    # 代码质量
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+    # 调试
+    "ipython>=8.0.0",
+]
+
+# ==================== 项目入口 ====================
+[project.scripts]
+qjzh-vllm = "python.main:main"
+
+[project.urls]
+Homepage = "https://github.com/example/qjzh-vllm-application"
+Repository = "https://github.com/example/qjzh-vllm-application"
+Documentation = "https://github.com/example/qjzh-vllm-application#readme"
+
+# ==================== 构建配置 ====================
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["python"]
+
+# ==================== Ruff 代码检查配置 ====================
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+]
+ignore = [
+    "E501",   # line too long (由 formatter 处理)
+    "B008",   # function call in default argument
+    "C901",   # too complex
+    "W191",   # indentation contains tabs
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.isort]
+known-first-party = ["infrastructure", "domain", "interfaces"]
+
+# ==================== Mypy 类型检查配置 ====================
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+# ==================== Pytest 测试配置 ====================
+[tool.pytest.ini_options]
+minversion = "7.0"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "gpu: marks tests that require GPU",
+]
+
+# ==================== Coverage 覆盖率配置 ====================
+[tool.coverage.run]
+source = ["python"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

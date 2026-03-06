@@ -1,0 +1,140 @@
+{
+  "routes": {
+    "login": {
+      "path": "/login",
+      "name": "Login",
+      "requiresAuth": false
+    },
+    "chat": {
+      "path": "/chat",
+      "name": "Chat",
+      "requiresAuth": true
+    },
+    "manager": {
+      "path": "/manager",
+      "name": "Manager",
+      "requiresAuth": true
+    }
+  },
+  "api": {
+    "auth": {
+      "login": "/v1/agent/sso/login",
+      "logout": "/v1/agent/sso/logout",
+      "me": "/v1/agent/sso/me",
+      "refresh": "/v1/agent/sso/refresh",
+      "captcha": "/v1/agent/sso/captcha"
+    },
+    "chat": {
+      "message": "/v1/agent/chat/message",
+      "stream": "/v1/agent/chat/stream",
+      "stop": "/v1/agent/chat/stop",
+      "history": "/v1/agent/chat/history",
+      "conversation": "/v1/agent/chat/conversation",
+      "upload": "/v1/agent/chat/upload",
+      "file": "/v1/agent/chat/files"
+    },
+    "agent": {
+      "rag": {
+        "kb": {
+          "create": "/v1/agent/rag/kb/create",
+          "update": "/v1/agent/rag/kb/update",
+          "detail": "/v1/agent/rag/kb/detail",
+          "delete": "/v1/agent/rag/kb/delete",
+          "list": "/v1/agent/rag/kb/list",
+          "namelist": "/v1/agent/rag/kb/namelist",
+          "export": "/v1/agent/rag/kb/export",
+          "knowledgeList": "/v1/agent/rag/kb/knowledge/list",
+          "file": {
+            "upload": "/v1/agent/rag/kb/file/upload",
+            "process": "/v1/agent/rag/kb/file/process",
+            "status": "/v1/agent/rag/kb/file/status",
+            "updateStatus": "/v1/agent/rag/kb/file/update_status",
+            "delete": "/v1/agent/rag/kb/file/delete",
+            "download": "/v1/agent/rag/kb/file/download"
+          },
+          "ontology": {
+            "schema": "/v1/agent/rag/ontology/schema",
+            "nodes": "/v1/agent/rag/ontology/nodes",
+            "statistics": "/v1/agent/rag/ontology/statistics",
+            "create": "/v1/agent/rag/ontology/node/create",
+            "update": "/v1/agent/rag/ontology/node/update",
+            "delete": "/v1/agent/rag/ontology/node/delete"
+          }
+        }
+      },
+      "memory": "/v1/agent/memory",
+      "memoryContent": {
+        "search": "/v1/agent/memory/content/search",
+        "delete": "/v1/agent/memory/content/delete",
+        "clear": "/v1/agent/memory/content/clear"
+      },
+      "mcptools": {
+        "integrate": {
+          "list": "/v1/agent/tools/integrate/list",
+          "add": "/v1/agent/tools/integrate/add",
+          "update": "/v1/agent/tools/integrate/update",
+          "delete": "/v1/agent/tools/integrate/delete",
+          "discover": "/v1/agent/tools/integrate/discover"
+        },
+        "log": {
+          "list": "/v1/agent/tools/log/list"
+        },
+        "rating": {
+          "add": "/v1/agent/tools/rating/add",
+          "list": "/v1/agent/tools/rating/summary"
+        },
+        "relation": {
+          "list": "/v1/agent/tools/relation/list",
+          "add": "/v1/agent/tools/relation/add"
+        },
+        "version": {
+          "list": "/v1/agent/tools/version/list",
+          "create": "/v1/agent/tools/version/create",
+          "restore": "/v1/agent/tools/version/restore"
+        },
+        "discovery": {
+          "search": "/v1/agent/tools/discovery/search"
+        },
+        "server": {
+          "list": "/v1/agent/tools/server/list",
+          "add": "/v1/agent/tools/server/add"
+        }
+      },
+      "skills": "/v1/agent/skills"
+    },
+    "device": {
+      "sensor": "/v1/agent/device/sensor",
+      "edge": "/v1/agent/edge",
+      "manager": "/v1/agent/device/mng"
+    },
+    "warnning": {
+      "realtime": "/v1/agent/warnning/realtime",
+      "history": "/v1/agent/warnning/history",
+      "manager": "/v1/agent/warnning/mng"
+    },
+    "prompt": {
+      "list": "/v1/agent/prompt/template/list",
+      "detail": "/v1/agent/prompt/template/get",
+      "save": "/v1/agent/prompt/template/create",
+      "update": "/v1/agent/prompt/template/update",
+      "delete": "/v1/agent/prompt/template/delete",
+      "status": "/v1/agent/prompt/template/toggle_status",
+      "test": {
+        "ab": "/v1/agent/prompt/test/ab_run",
+        "quick": "/v1/agent/prompt/test/quick_run",
+        "batch": "/v1/agent/prompt/test/batch_run",
+        "ab_stream": "/v1/agent/prompt/test/ab_run_stream",
+        "quick_stream": "/v1/agent/prompt/test/quick_run_stream"
+      }
+    },
+    "role": {
+      "list": "/v1/agent/role/list",
+      "detail": "/v1/agent/role/get",
+      "create": "/v1/agent/role/create",
+      "update": "/v1/agent/role/update",
+      "delete": "/v1/agent/role/delete",
+      "status": "/v1/agent/role/toggle_status"
+    }
+  }
+}
+

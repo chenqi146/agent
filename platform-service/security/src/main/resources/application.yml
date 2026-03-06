@@ -1,0 +1,52 @@
+server:
+  port: 19092
+  mvc:
+    path-match:
+      matching-strategy: ANT_PATH_MATCHER
+
+spring:
+  application:
+    name: security
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:base-config.yml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: c316bed3-bf5b-4090-aefe-cc13861fa3ed
+        group: DEFAULT_GROUP
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
+        namespace: c316bed3-bf5b-4090-aefe-cc13861fa3ed
+        group: DEFAULT_GROUP
+        shared-configs:
+          - data-id: base-config.yml
+            group: DEFAULT_GROUP
+            refresh: true
+        extension-configs:
+          - data-id: security.yml
+            group: DEFAULT_GROUP
+            refresh: true
+# Swagger/OpenAPI 配置
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+    filter: true
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  model-and-view-allowed: true
+  # 配置需要扫描的包
+  packages-to-scan: com.pg.platform.securitymng.interfaces.controller
+  # 配置需要扫描的路径
+  paths-to-match: /api/**
+
+

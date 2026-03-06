@@ -1,0 +1,89 @@
+server:
+  port: 19082
+
+# 网关 API Key：客户端请求需携带 X-API-Key 或 Authorization: Bearer <key>，未在排除路径内的接口会校验
+# 转发到下游时会把客户端的 key 去掉，按服务替换为对应下游的 API Key
+gateway:
+  api-key:
+    enabled: true
+    value: pg-gateway-key
+    exclude-paths:
+      - /api/v1/agent/sso/**
+      - /actuator/health
+      - /actuator/info
+  # 下游服务各自的 API Key（转发时替换，不把网关 key 透传）
+  downstream:
+    agent-service:
+      api-key: pg-agent
+
+spring:
+  application:
+    name: gateway
+  config:
+    import:
+      # 从 Nacos 加载网关自身配置（可选，没有也不会报错）
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:base-config.yml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: c316bed3-bf5b-4090-aefe-cc13861fa3ed
+        group: DEFAULT_GROUP
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: c316bed3-bf5b-4090-aefe-cc13861fa3ed
+        group: DEFAULT_GROUP
+        file-extension: yml
+    gateway:
+      # 避免转发到 agent-service 时因默认响应超时过短导致 Connection reset（status/process 等可能稍慢）
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 90s
+      # 简单路由：将 /api/v1/agent/sso/** 转发到 security 服务
+      routes:
+        # SSO 相关接口，转发到 security
+        # 前端访问路径: /api/v1/agent/sso/**
+        # StripPrefix=1 后，转发给 security 的实际路径: /v1/agent/sso/**
+        - id: security-sso-route
+          uri: http://localhost:19092   # security 工程监听的端口
+          predicates:
+            - Path=/api/v1/agent/sso/**
+          filters:
+            - StripPrefix=1
+            - AddRequestHeader=X-From-Gateway, pg-gateway
+
+        # 其余 /api/v1/agent/** 接口，统一转发到 Python agent-service
+        - id: agent-service-route
+          uri: http://localhost:19093   # agent-service 工程监听的端口
+          predicates:
+            - Path=/api/v1/agent/**
+          metadata:
+            # 禁用该路由的响应超时，避免 status/process 等长耗时接口被网关主动断开导致 Connection reset
+            response-timeout: -1
+          filters:
+            # 1) 去掉 /api 前缀，让后端看到的是 /v1/agent/...
+            - StripPrefix=1
+            # 去掉客户端带来的网关 API Key，避免透传到下游；保留 Authorization、X-User-Id 供 agent-service 做用户校验
+            - RemoveRequestHeader=X-API-Key
+            - RemoveRequestHeader=Api-Key
+            # 注入 agent-service 的 API Key（字面量避免占位符未解析导致 401）
+            - AddRequestHeader=X-API-Key, pg-agent
+            - AddRequestHeader=X-From-Gateway, pg-gateway
+      # 默认过滤器示例：这里暂时不做认证，只演示可以全局加/删头
+      default-filters:
+        - RemoveRequestHeader=Cookie
+
+# Log4j2 配置（与 resources/log4j2.xml 配合）
+logging:
+  config: classpath:log4j2.xml
+  level:
+    root: INFO
+    com.pg.platform.gateway: DEBUG
+    org.springframework.cloud.gateway: INFO
+  file:
+    name: logs/gateway.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+
+

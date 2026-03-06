@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pg.platform.securitymng.infrastructure.persistence.UserPersistenceMapper">
+
+    <resultMap id="BaseResultMap" type="com.pg.platform.securitymng.infrastructure.persistence.UserPO">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password_encoded" property="passwordEncoded"/>
+    </resultMap>
+
+    <select id="findByUsername" resultMap="BaseResultMap">
+        SELECT
+            id,
+            username,
+            password
+        FROM user_tbl
+        WHERE username = #{username}
+          AND status = 1
+        LIMIT 1
+    </select>
+</mapper>

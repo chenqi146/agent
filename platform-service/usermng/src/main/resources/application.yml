@@ -1,0 +1,55 @@
+server:
+  port: 19081
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/pg-platform-db?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ''
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: usermng
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+      - optional:nacos:base-config.yml
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: c316bed3-bf5b-4090-aefe-cc13861fa3ed
+        group: DEFAULT_GROUP
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yml
+        namespace: c316bed3-bf5b-4090-aefe-cc13861fa3ed
+        group: DEFAULT_GROUP
+        shared-configs:
+          - data-id: base-config.yml
+            group: DEFAULT_GROUP
+            refresh: true
+        extension-configs:
+          - data-id: usermng.yml
+            group: DEFAULT_GROUP
+            refresh: true
+
+# MyBatis：XML 映射放在 resources/mapper 下
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.pg.platform.usermng.domain.model
+
+# Log4j2 配置（与 resources/log4j2.xml 配合）
+logging:
+  config: classpath:log4j2.xml
+  level:
+    root: INFO
+    com.pg.platform.usermng: DEBUG
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.apache.ibatis: DEBUG
+  file:
+    name: logs/usermng.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"

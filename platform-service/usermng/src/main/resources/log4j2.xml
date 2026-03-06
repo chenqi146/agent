@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Properties>
+		<Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+		<!-- 控制台彩色：按级别着色 -->
+		<Property name="CONSOLE_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %style{[%t]}{dim} %highlight{%-5level}{FATAL=red bold, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue} %style{%logger{36}}{cyan} - %msg%n</Property>
+		<Property name="LOG_PATH">logs</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${CONSOLE_PATTERN}" charset="UTF-8" disableAnsi="false"/>
+			<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+		</Console>
+
+		<RollingFile name="RollingFile" fileName="${LOG_PATH}/usermng.log"
+					 filePattern="${LOG_PATH}/usermng-%d{yyyy-MM-dd}-%i.log">
+			<PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<SizeBasedTriggeringPolicy size="100 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="30"/>
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="com.pg.platform.usermng" level="DEBUG" additivity="false">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="RollingFile"/>
+		</Logger>
+		<Logger name="org.springframework" level="INFO" additivity="false">
+			<AppenderRef ref="Console"/>
+		</Logger>
+		<Root level="INFO">
+			<AppenderRef ref="Console"/>
+			<AppenderRef ref="RollingFile"/>
+		</Root>
+	</Loggers>
+</Configuration>

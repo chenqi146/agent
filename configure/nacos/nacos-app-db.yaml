@@ -1,0 +1,51 @@
+# Qdrant向量数据库配置
+qdrant:
+  # Qdrant服务器地址
+  host: localhost
+  # Qdrant服务器端口
+  port: 6333
+  # API密钥
+  api-key: 
+  # 连接超时时间（毫秒）
+  timeout: 5000
+  # 是否启用HTTPS
+  https: false
+  # 默认集合名称
+  default-collection: platform-vectors
+  # 向量维度
+  vector-size: 768
+  # 距离度量方式：Cosine, Euclidean, Dot
+  distance: Cosine
+  # 分片数量
+  shard-number: 1
+  # 副本数量
+  replication-factor: 1
+
+# IoTDB时序数据库配置
+iotdb:
+  # IoTDB服务器地址
+  host: localhost
+  # IoTDB服务器端口
+  port: 6667
+  # 用户名
+  username: root
+  # 密码
+  password: root
+  # 数据库名称
+  database-name: platform_iotdb
+  # 连接超时时间（毫秒）
+  connection-timeout: 60000
+  # 最大连接数
+  max-connection: 10
+  # 是否启用压缩
+  enable-compression: true
+  # 是否启用RPC压缩
+  enable-rpc-compression: true
+  # 时区
+  zone-id: Asia/Shanghai
+  # 批处理大小
+  batch-size: 1000
+  # 批处理超时时间（毫秒）
+  batch-timeout: 1000
+  # 缓冲区大小
+  buffer-size: 1048576

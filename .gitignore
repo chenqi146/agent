@@ -1,0 +1,22 @@
+# OS / temp
+.DS_Store
+*.tmp
+*.swp
+
+# Logs
+*.log
+**/logs/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Java / Maven
+**/target/
+
+# Frontend (web)
+web/node_modules/
+web/dist/
+web/.vite/
+*.tsbuildinfo

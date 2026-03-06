@@ -1,0 +1,98 @@
+# RabbitMQ配置
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    # 开启发送确认
+    publisher-confirm-type: correlated
+    # 开启发送失败退回
+    publisher-returns: true
+    # 开启手动确认
+    listener:
+      simple:
+        acknowledge-mode: manual
+        retry:
+          enabled: true
+          # 最大重试次数
+          max-attempts: 3
+          # 重试间隔
+          initial-interval: 1000ms
+  # Kafka配置
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      # 发生错误后，消息重发的次数
+      retries: 3
+      # 每次批量发送消息的数量
+      batch-size: 16384
+      # 缓冲区大小
+      buffer-memory: 33554432
+      # key的序列化方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # value的序列化方式
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # acks=0： 生产者在成功写入消息之前不会等待任何来自服务器的响应
+      # acks=1： 只要集群的首领节点收到消息，生产者就会收到一个来自服务器的成功响应
+      # acks=all：只有当所有参与复制的节点全部收到消息时，生产者才会收到一个来自服务器的成功响应
+      acks: 1
+    consumer:
+      # 自动提交的时间间隔
+      auto-commit-interval: 1s
+      # 该属性指定了消费者在读取一个没有偏移量的分区或者偏移量无效的情况下该作何处理
+      # latest：在偏移量无效的情况下，消费者将从最新的记录开始读取数据（在消费者启动之后生成的记录）
+      # earliest：在偏移量无效的情况下，消费者将从起始位置读取分区的记录
+      # none：在偏移量无效的情况下，消费者将抛出异常
+      auto-offset-reset: latest
+      # 是否自动提交偏移量，默认值是true，为了避免出现重复数据和数据丢失，可以把它设置为false，然后手动提交偏移量
+      enable-auto-commit: false
+      # key的反序列化方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # value的反序列化方式
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      # 在侦听器容器中运行的线程数
+      concurrency: 5
+      # listner负责ack，每调用一次，就立即commit
+      ack-mode: manual_immediate
+      # 消费监听接口监听的主题不存在时，默认会报错，所以设置为false忽略错误
+      missing-topics-fatal: false
+
+# MQTT配置
+mqtt:
+  # MQTT服务器地址
+  url: tcp://localhost:1883
+  # 用户名
+  username: admin
+  # 密码
+  password: admin
+  # 客户端ID，同一服务器中客户端ID需要唯一
+  client-id: platform-mqtt-client
+  # 默认主题
+  default-topic: platform/topic
+  # 超时时间
+  completion-timeout: 3000
+  # 连接超时时间
+  connection-timeout: 3000
+  # 最大重连次数
+  max-reconnect: 10
+  # 心跳间隔，单位秒
+  keep-alive-interval: 20
+  # 是否自动重连
+  automatic-reconnect: true
+  # 清除会话
+  clean-session: true
+  # 是否启用SSL
+  ssl-enabled: false
+  # SSL协议
+  ssl-protocol: TLSv1.2
+  # SSL密钥库位置
+  ssl-key-store: 
+  # SSL密钥库密码
+  ssl-key-store-password: 
+  # SSL信任库位置
+  ssl-trust-store: 
+  # SSL信任库密码
+  ssl-trust-store-password: 
